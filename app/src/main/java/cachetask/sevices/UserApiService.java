@@ -5,6 +5,8 @@ import cachetask.entity.User;
 import cachetask.repository.UserRepository;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 public class UserApiService implements UserService{
 
@@ -20,21 +22,22 @@ public class UserApiService implements UserService{
 
     @Override
     public User read(Long id) {
-        return null;
+        Optional<User> read = userRepository.read(id);
+        return read.orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
     }
 
     @Override
     public boolean update(User user, Long id) {
-        return false;
+        return userRepository.update(user, id);
     }
 
     @Override
     public boolean delete(Long id) {
-        return false;
+        return userRepository.delete(id);
     }
 
     @Override
     public List<User> readAll() {
-        return null;
+        return userRepository.readAll();
     }
 }

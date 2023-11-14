@@ -1,6 +1,5 @@
 package cachetask.controller;
 
-import cachetask.entity.User;
 import cachetask.repository.UserApiRepository;
 import cachetask.repository.UserRepository;
 import cachetask.sevices.UserApiService;
@@ -9,31 +8,29 @@ import com.google.gson.Gson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet("/users/create")
-public class UserCreateController extends HttpServlet {
-    private static final Logger logger = LoggerFactory.getLogger(UserCreateController.class);
+@WebServlet("/users/delete")
+public class UserDeleteController extends HttpServlet {
+
+    private static final Logger logger = LoggerFactory.getLogger( UserDeleteController.class);
     Gson gson = new Gson();
     private final UserRepository userRepository = new UserApiRepository();
     private final UserService userService = new UserApiService(userRepository);
 
     @Override
-    protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            resp.setContentType("application/json");
-            BufferedReader reader = req.getReader();
-            User user = gson.fromJson(reader, User.class);
-            boolean b = userService.create(user);
-
+            long id = Long.parseLong(req.getParameter("id"));
+            boolean delete = userService.delete(id);
             PrintWriter out = resp.getWriter();
-            out.println(b);
+            out.println(delete);
         } catch (NumberFormatException e) {
             logger.error("Неверный формат ID", e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -45,4 +42,3 @@ public class UserCreateController extends HttpServlet {
         }
     }
 }
-
