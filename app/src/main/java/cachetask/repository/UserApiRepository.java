@@ -1,5 +1,6 @@
 package cachetask.repository;
 
+import cachetask.aop.cache.Cacheable;
 import cachetask.connect.Connect;
 import cachetask.connect.ConnectPostgresQL;
 import cachetask.entity.User;
@@ -45,12 +46,13 @@ public class UserApiRepository implements UserRepository {
     @SneakyThrows
     @Override
     public Optional<User> read(Long id) {
+        System.out.println("id = " + id);
         try (Connection conn = connection.connect();
-             PreparedStatement statement = conn.prepareStatement("SELECT * FROM users WHERE id=?")) {
+             PreparedStatement statement = conn.prepareStatement("SELECT * FROM users WHERE user_id=?")) {
             statement.setLong(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    User user = new User(resultSet.getLong("id"),
+                    User user = new User(resultSet.getLong("user_id"),
                             resultSet.getString("name"),
                             resultSet.getString("last_name"),
                             resultSet.getString("email"));
@@ -70,7 +72,7 @@ public class UserApiRepository implements UserRepository {
             Optional<User> read = read(id);
             if (read.isPresent()) {
                 try (PreparedStatement statement = conn.prepareStatement(
-                        "UPDATE users SET name=?, last_name=?, email=? WHERE id=?")) {
+                        "UPDATE users SET name=?, last_name=?, email=? WHERE user_id=?")) {
                     statement.setString(1, user.getName());
                     statement.setString(2, user.getLastName());
                     statement.setString(3, user.getEmail());
@@ -99,7 +101,7 @@ public class UserApiRepository implements UserRepository {
         try (Connection conn = connection.connect()) {
             Optional<User> read = read(id);
             if (read.isPresent()) {
-                try (PreparedStatement statement = conn.prepareStatement("DELETE FROM users WHERE id=?")) {
+                try (PreparedStatement statement = conn.prepareStatement("DELETE FROM users WHERE user_id=?")) {
                     statement.setLong(1, id);
                     int rowsUpdated = statement.executeUpdate();
 
