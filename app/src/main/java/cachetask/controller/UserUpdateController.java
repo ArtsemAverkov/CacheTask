@@ -1,13 +1,14 @@
 package cachetask.controller;
 
-import cachetask.aop.cache.CacheFactory;
-import cachetask.aop.cache.CachingAspect;
 import cachetask.entity.User;
 import cachetask.repository.UserApiRepository;
 import cachetask.repository.UserRepository;
 import cachetask.sevices.UserApiService;
 import cachetask.sevices.UserService;
-import com.google.gson.Gson;
+import com.thoughtworks.xstream.XStream;
+import jsonparser.parser.JsonParser;
+import jsonparser.parser.JsonParserImpl;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,22 +25,41 @@ import java.io.PrintWriter;
 public class UserUpdateController extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(UserUpdateController.class);
-    Gson gson = new Gson();
+
+    XStream xStream = new XStream();
+    JsonParser jsonParser = new JsonParserImpl();
     private final UserRepository userRepository = new UserApiRepository();
     private final UserService userService = new UserApiService(userRepository);
+    @SneakyThrows
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
             BufferedReader reader = req.getReader();
-            User updatedUser = gson.fromJson(reader, User.class);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
 
-            Long userId = Long.parseLong(req.getParameter("id"));
+            String contentType = req.getContentType();
+            String requestData = stringBuilder.toString();
 
-            boolean updated = userService.update(updatedUser, userId);
+            if (contentType != null && contentType.contains("application/json")) {
 
-            if (updated) {
-                PrintWriter out = resp.getWriter();
-                out.println(updated);
+                User updatedUser = (User) jsonParser.generateObjectFromJson(User.class, requestData);
+                Long userId = Long.parseLong(req.getParameter("id"));
+                boolean updated = userService.update(updatedUser, userId);
+                    if (updated) {
+                        resp.setContentType("application/json");
+                        PrintWriter out = resp.getWriter();
+                        out.println(updated);
+                    }
+            } else if (contentType != null && contentType.contains("application/xml")) {
+                        User userFromXml = (User) xStream.fromXML(requestData);
+                        boolean created = userService.create(userFromXml);
+                        resp.setContentType("application/xml");
+                        PrintWriter out = resp.getWriter();
+                        out.println(created);
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 resp.getWriter().write("Пользователь не найден");

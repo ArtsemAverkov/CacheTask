@@ -43,7 +43,7 @@ public class UserApiService implements UserService{
         return userRepository.delete(id);
     }
 
-    @Cacheable("userCache")
+
     @Override
     public List<User> readAll() {
         return userRepository.readAll();

@@ -46,7 +46,6 @@ public class UserApiRepository implements UserRepository {
     @SneakyThrows
     @Override
     public Optional<User> read(Long id) {
-        System.out.println("id = " + id);
         try (Connection conn = connection.connect();
              PreparedStatement statement = conn.prepareStatement("SELECT * FROM users WHERE user_id=?")) {
             statement.setLong(1, id);
@@ -129,7 +128,7 @@ public class UserApiRepository implements UserRepository {
             try (Statement statement = conn.createStatement();
                  ResultSet resultSet = statement.executeQuery("SELECT * FROM users")) {
                 while (resultSet.next()) {
-                    users.add(new User(resultSet.getLong("id"),
+                    users.add(new User(resultSet.getLong("user_id"),
                             resultSet.getString("name"),
                             resultSet.getString("last_name"),
                             resultSet.getString("email")));

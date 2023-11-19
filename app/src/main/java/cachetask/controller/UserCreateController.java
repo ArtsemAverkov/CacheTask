@@ -1,13 +1,15 @@
 package cachetask.controller;
 
-import cachetask.aop.cache.CacheFactory;
-import cachetask.aop.cache.CachingAspect;
+
 import cachetask.entity.User;
 import cachetask.repository.UserApiRepository;
 import cachetask.repository.UserRepository;
 import cachetask.sevices.UserApiService;
 import cachetask.sevices.UserService;
-import com.google.gson.Gson;
+import com.thoughtworks.xstream.XStream;
+import jsonparser.parser.JsonParser;
+import jsonparser.parser.JsonParserImpl;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,20 +26,42 @@ public class UserCreateController extends HttpServlet {
 
 
     private static final Logger logger = LoggerFactory.getLogger(UserCreateController.class);
-    Gson gson = new Gson();
+    XStream xStream = new XStream();
+    JsonParser jsonParser = new JsonParserImpl();
     private final UserRepository userRepository = new UserApiRepository();
     private final UserService userService = new UserApiService(userRepository);
 
+    @SneakyThrows
     @Override
     protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws IOException {
         try {
-            resp.setContentType("application/json");
             BufferedReader reader = req.getReader();
-            User user = gson.fromJson(reader, User.class);
-            boolean b = userService.create(user);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            String requestData = stringBuilder.toString();
 
-            PrintWriter out = resp.getWriter();
-            out.println(b);
+            String contentType = req.getContentType();
+            if (contentType != null && contentType.contains("application/json")) {
+                User user = (User) jsonParser.generateObjectFromJson(User.class, requestData);
+                boolean created = userService.create(user);
+
+                resp.setContentType("application/json");
+                PrintWriter out = resp.getWriter();
+                out.println(created);
+            } else if (contentType != null && contentType.contains("application/xml")) {
+                User userFromXml = (User) xStream.fromXML(requestData);
+                boolean created = userService.create(userFromXml);
+                resp.setContentType("application/xml");
+                PrintWriter out = resp.getWriter();
+                out.println(created);
+            } else {
+                // Неподдерживаемый тип данных
+                resp.setStatus(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE);
+                resp.getWriter().write("Неподдерживаемый тип данных");
+            }
         } catch (NumberFormatException e) {
             logger.error("Неверный формат ID", e);
             resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);

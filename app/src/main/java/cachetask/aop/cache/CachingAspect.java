@@ -25,11 +25,9 @@ public class CachingAspect  {
     public Object cache(ProceedingJoinPoint joinPoint, Cacheable cacheable) throws Throwable {
         CacheI<String, Object> cache = caches.computeIfAbsent(cacheable.value(),
                 k -> cacheFactory.createCache());
-        System.out.println("cache = " + cache);
         switch (joinPoint.getSignature().getName()) {
             case "read":
                 String cacheKey = generateCacheKey(joinPoint);
-                System.out.println("cacheKey = " + cacheKey);
                 Object cachedValue = cache.get(cacheKey);
                 if (cachedValue != null) {
                     return cachedValue;
