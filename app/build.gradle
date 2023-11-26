@@ -13,6 +13,8 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.itextpdf:itextpdf:5.5.13'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.24'
     implementation group: 'org.yaml', name: 'snakeyaml', version: '2.2'
     implementation 'com.thoughtworks.xstream:xstream:1.4.18'
     implementation "org.hibernate:hibernate-validator:8.0.1.Final"

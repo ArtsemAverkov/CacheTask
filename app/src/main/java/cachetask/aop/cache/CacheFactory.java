@@ -1,9 +1,8 @@
 package cachetask.aop.cache;
 
-import cachetask.Configuration.CacheProperties;
-import cachetask.Configuration.ConfigurationLoader;
 
-import java.util.Map;
+import cachetask.configuration.CacheProperties;
+import cachetask.configuration.ConfigurationLoader;
 
 public class CacheFactory {
     private final int maxSize;
@@ -12,7 +11,7 @@ public class CacheFactory {
     public CacheFactory() {
         ConfigurationLoader loader = new ConfigurationLoader();
         CacheProperties cacheProperties = loader
-                .loadCacheProperties("/Users/artemaverkov/clevertec_task/CacheTask/app/src/main/resources/application.yml"); //TODO проблас с путем
+                .loadCacheProperties("/Users/artemaverkov/clevertec_task/patterns_task/CacheTask/app/src/main/resources/application.yml"); //TODO проблема с путем
 
         if (cacheProperties != null) {
             this.maxSize = cacheProperties.getMaxSize();

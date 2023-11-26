@@ -1,4 +1,4 @@
-package cachetask.Configuration;
+package cachetask.configuration;
 
 import org.yaml.snakeyaml.Yaml;
 

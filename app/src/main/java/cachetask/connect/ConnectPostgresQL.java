@@ -1,14 +1,11 @@
 package cachetask.connect;
 
-import cachetask.Configuration.ConfigurationLoader;
-import cachetask.Configuration.PostgreSqlProperties;
-import org.yaml.snakeyaml.Yaml;
+import cachetask.configuration.ConfigurationLoader;
+import cachetask.configuration.PostgreSqlProperties;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Map;
 
 public class ConnectPostgresQL implements Connect{
     private Connection connection;
@@ -17,7 +14,7 @@ public class ConnectPostgresQL implements Connect{
     public Connection connect() throws SQLException, ClassNotFoundException {
         ConfigurationLoader loader = new ConfigurationLoader();
         PostgreSqlProperties postgreSqlProperties = loader
-                .loadProperties("/Users/artemaverkov/clevertec_task/CacheTask/app/src/main/resources/application.yml"); //TODO проблас с путем
+                .loadProperties("/Users/artemaverkov/clevertec_task/patterns_task/CacheTask/app/src/main/resources/application.yml"); //TODO проблас с путем
         if (postgreSqlProperties != null) {
             String driver = postgreSqlProperties.getDriver();
             String url = postgreSqlProperties.getUrl();
