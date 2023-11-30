@@ -7,8 +7,6 @@ import cachetask.repository.UserApiRepository;
 import cachetask.repository.UserRepository;
 import cachetask.sevices.UserApiService;
 import cachetask.sevices.UserService;
-import jsonparser.parser.JsonParser;
-import jsonparser.parser.JsonParserImpl;
 import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,6 @@ public class UserReadPdfController extends HttpServlet {
         try {
             Long userId = Long.parseLong(req.getParameter("id"));
             User user = userService.read(userId);
-            System.out.println("user = " + user);
             pdfGenerate.writeToPdfFile(user);
 
             File file = new File("updated_Clevertec_Template.pdf");

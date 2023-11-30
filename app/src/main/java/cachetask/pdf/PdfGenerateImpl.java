@@ -42,13 +42,13 @@ public class PdfGenerateImpl implements PdfGenerate {
         }
     }
 
-    private String[] getStringsUser(User user) {
+    public String[] getStringsUser(User user) {
         String[] userAttributes = {
                 "User:",
-                "id=" + user.getId(),
-                "name=" + user.getName(),
-                "lastName=" + user.getLastName(),
-                "email=" + user.getEmail()
+                "id= " + user.getId(),
+                "name= " + user.getName(),
+                "lastName= " + user.getLastName(),
+                "email= " + user.getEmail()
         };
         return userAttributes;
     }

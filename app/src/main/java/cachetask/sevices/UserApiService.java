@@ -2,7 +2,6 @@ package cachetask.sevices;
 
 
 import cachetask.aop.cache.Cacheable;
-import cachetask.aop.cache.CachingAspect;
 import cachetask.entity.User;
 import cachetask.repository.UserRepository;
 
