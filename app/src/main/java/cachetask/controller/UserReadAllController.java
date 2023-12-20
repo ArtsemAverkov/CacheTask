@@ -30,10 +30,9 @@ public class UserReadAllController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            int page = 1; // по умолчанию первая страница
-            int pageSize = DEFAULT_PAGE_SIZE; // по умолчанию 20 элементов на странице
+            int page = 1;
+            int pageSize = DEFAULT_PAGE_SIZE;
 
-            // Проверяем, задан ли параметр "page" и "pageSize" в запросе
             if (req.getParameter("page") != null) {
                 page = Integer.parseInt(req.getParameter("page"));
             }

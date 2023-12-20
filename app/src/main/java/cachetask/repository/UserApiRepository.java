@@ -1,6 +1,5 @@
 package cachetask.repository;
 
-import cachetask.aop.cache.Cacheable;
 import cachetask.connect.Connect;
 import cachetask.connect.ConnectPostgresQL;
 import cachetask.entity.User;
@@ -125,7 +124,6 @@ public class UserApiRepository implements UserRepository {
     public List<User> readAll(int startIndex, int pageSize) {
         List<User> users = new ArrayList<>();
         try (Connection conn = connection.connect()) {
-            // Используем PreparedStatement для безопасного выполнения запроса
             String query = "SELECT * FROM users LIMIT ?, ?";
             try (PreparedStatement statement = conn.prepareStatement(query)) {
                 statement.setInt(1, startIndex);
