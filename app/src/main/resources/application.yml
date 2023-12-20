@@ -3,6 +3,10 @@ database:
   username: artemaverkov
   password: root
   driver-class-name: org.postgresql.Driver
+  createSchema: true
+  insertSchema: true
 cache:
   max-size: 100
   algorithm: LRU
+
+
