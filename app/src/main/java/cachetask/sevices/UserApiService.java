@@ -45,7 +45,9 @@ public class UserApiService implements UserService{
 
 
     @Override
-    public List<User> readAll() {
-        return userRepository.readAll();
+    public List<User> readAll(int page, int pageSize) {
+        int startIndex = (page - 1) * pageSize;
+        return userRepository.readAll(startIndex, pageSize);
+    }
     }
 }
