@@ -12,5 +12,6 @@ public class PostgreSqlProperties {
     private final String url;
     private final String username;
     private final String password;
-
+    private final boolean createSchema;
+    private final boolean insertSchema;
 }
