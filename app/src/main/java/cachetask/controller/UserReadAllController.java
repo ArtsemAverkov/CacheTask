@@ -25,17 +25,30 @@ public class UserReadAllController extends HttpServlet {
     JsonParser jsonParser = new JsonParserImpl();
     private final UserRepository userRepository = new UserApiRepository();
     private final UserService userService = new UserApiService(userRepository);
+    private static final int DEFAULT_PAGE_SIZE = 20;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            StringBuilder stringBuilder = new StringBuilder();
-            List<User> userList = userService.readAll();
+            int page = 1;
+            int pageSize = DEFAULT_PAGE_SIZE;
 
-            for(User s: userList){
-                String json1 = jsonParser.generateJson(s);
-                stringBuilder.append(json1);
+            if (req.getParameter("page") != null) {
+                page = Integer.parseInt(req.getParameter("page"));
             }
+
+            if (req.getParameter("pageSize") != null) {
+                pageSize = Integer.parseInt(req.getParameter("pageSize"));
+            }
+
+            StringBuilder stringBuilder = new StringBuilder();
+            List<User> userList = userService.readAll(page, pageSize);
+
+            for (User user : userList) {
+                String json = jsonParser.generateJson(user);
+                stringBuilder.append(json);
+            }
+
             resp.setContentType("application/json");
             resp.getWriter().write(String.valueOf(stringBuilder));
         } catch (Exception e) {

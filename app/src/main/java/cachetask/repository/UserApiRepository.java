@@ -1,6 +1,5 @@
 package cachetask.repository;
 
-import cachetask.aop.cache.Cacheable;
 import cachetask.connect.Connect;
 import cachetask.connect.ConnectPostgresQL;
 import cachetask.entity.User;
@@ -122,20 +121,27 @@ public class UserApiRepository implements UserRepository {
 
     @SneakyThrows
     @Override
-    public List<User> readAll() {
+    public List<User> readAll(int startIndex, int pageSize) {
         List<User> users = new ArrayList<>();
         try (Connection conn = connection.connect()) {
-            try (Statement statement = conn.createStatement();
-                 ResultSet resultSet = statement.executeQuery("SELECT * FROM users")) {
-                while (resultSet.next()) {
-                    users.add(new User(resultSet.getLong("user_id"),
-                            resultSet.getString("name"),
-                            resultSet.getString("last_name"),
-                            resultSet.getString("email")));
+            String query = "SELECT * FROM users LIMIT ?, ?";
+            try (PreparedStatement statement = conn.prepareStatement(query)) {
+                statement.setInt(1, startIndex);
+                statement.setInt(2, pageSize);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        users.add(new User(
+                                resultSet.getLong("user_id"),
+                                resultSet.getString("name"),
+                                resultSet.getString("last_name"),
+                                resultSet.getString("email")
+                        ));
+                    }
                 }
             }
         } catch (SQLException e) {
-            logger.error("Ошибка при чтении всех пользователей", e);
+            logger.error("Ошибка при чтении пользователей с пагинацией", e);
         }
         return users;
     }

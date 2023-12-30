@@ -12,5 +12,5 @@ public interface UserService {
     User read (Long id);
     boolean update(User user, Long id);
     boolean delete(Long id);
-    List<User> readAll();
+    List<User> readAll(int page, int pageSize);
 }

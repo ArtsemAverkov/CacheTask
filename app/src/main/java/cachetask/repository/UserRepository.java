@@ -12,5 +12,5 @@ public interface UserRepository {
     Optional<User> read (Long id);
     boolean update(User user, Long id);
     boolean delete(Long id);
-    List<User> readAll();
+    List<User> readAll(int startIndex, int pageSize);
 }

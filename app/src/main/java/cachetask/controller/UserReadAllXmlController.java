@@ -24,11 +24,23 @@ public class UserReadAllXmlController extends HttpServlet {
     XStream xStream = new XStream();
     private final UserRepository userRepository = new UserApiRepository();
     private final UserService userService = new UserApiService(userRepository);
+    private static final int DEFAULT_PAGE_SIZE = 20;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            List<User> userList = userService.readAll();
+            int page = 1;
+            int pageSize = DEFAULT_PAGE_SIZE;
+
+            if (req.getParameter("page") != null) {
+                page = Integer.parseInt(req.getParameter("page"));
+            }
+
+            if (req.getParameter("pageSize") != null) {
+                pageSize = Integer.parseInt(req.getParameter("pageSize"));
+            }
+
+            List<User> userList = userService.readAll(page, pageSize);
             String xml = xStream.toXML(userList);
             resp.setContentType("application/json");
             resp.getWriter().write(xml);
