@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserApiRepository implements UserRepository {
     private static final Logger logger = LoggerFactory.getLogger(UserApiRepository.class);
 
@@ -21,6 +23,7 @@ public class UserApiRepository implements UserRepository {
         connection = new ConnectPostgresQL();
     }
 
+    @SneakyThrows
     @Override
     public boolean create(User user) {
         try (Connection conn = connection.connect();
@@ -59,11 +62,12 @@ public class UserApiRepository implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при чтении пользователя", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
         return Optional.empty();
     }
 
-    @SneakyThrows
     @Override
     public boolean update(User user, Long id) {
         try (Connection conn = connection.connect()) {
@@ -89,6 +93,8 @@ public class UserApiRepository implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при обновлении пользователя", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -115,6 +121,8 @@ public class UserApiRepository implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при удалении пользователя", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -142,6 +150,8 @@ public class UserApiRepository implements UserRepository {
             }
         } catch (SQLException e) {
             logger.error("Ошибка при чтении пользователей с пагинацией", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
         return users;
     }

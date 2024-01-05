@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AppConfig {
+public class AppConfigs {
     DatabaseConfig databaseConfig;
 }
