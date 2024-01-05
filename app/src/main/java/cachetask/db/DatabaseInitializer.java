@@ -55,5 +55,4 @@ public class DatabaseInitializer {
             e.printStackTrace();
         }
     }
-    }
 }

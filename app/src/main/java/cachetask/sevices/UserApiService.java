@@ -5,13 +5,16 @@ import cachetask.aop.cache.Cacheable;
 import cachetask.aop.cache.CachingAspect;
 import cachetask.entity.User;
 import cachetask.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-
+@Service
 public class UserApiService implements UserService{
 
+    @Autowired
     private UserRepository userRepository;
     public UserApiService(UserRepository userRepository){
         this.userRepository = userRepository;
@@ -49,5 +52,5 @@ public class UserApiService implements UserService{
         int startIndex = (page - 1) * pageSize;
         return userRepository.readAll(startIndex, pageSize);
     }
-    }
 }
+
